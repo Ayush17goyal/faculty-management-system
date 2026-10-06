@@ -1,0 +1,126 @@
+<!-- SECTION: dashboard -->
+<h3>VP Dashboard</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Total Faculty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${totalFaculty}</div>
+  <div>Total Departments : ${totalDepartments}</div>
+  <div>Total HODs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${totalHODs}</div>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Faculty Overview</div>
+  <table class="data-table" style="min-width: 320px;">
+    <thead>
+      <tr>
+        <th style="width: 180px;">Department</th>
+        <th style="width: 120px;">Faculty Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${facRows}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Department Overview</div>
+  <table class="data-table" style="min-width: 500px;">
+    <thead>
+      <tr>
+        <th style="width: 140px;">Department</th>
+        <th style="width: 180px;">HOD</th>
+        <th style="width: 120px;">Faculty Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${deptRows}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION: faculty -->
+<h3>Faculty Overview</h3>
+
+<table class="data-table" style="min-width: 620px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 150px;">Name</th>
+      <th style="width: 100px;">Department</th>
+      <th style="width: 130px;">Designation</th>
+      <th>Email</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: departments -->
+<h3>Department Overview</h3>
+
+<table class="data-table" style="min-width: 500px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 140px;">Department</th>
+      <th style="width: 160px;">HOD</th>
+      <th style="width: 110px;">Faculty Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: hods -->
+<h3>HOD Overview</h3>
+
+<table class="data-table" style="min-width: 550px;">
+  <thead>
+    <tr>
+      <th style="width: 140px;">Department</th>
+      <th style="width: 160px;">HOD</th>
+      <th style="width: 170px;">Email</th>
+      <th style="width: 110px;">Phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: reports -->
+<h3>Institutional Reports</h3>
+
+<div style="margin-top: 15px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">1. Department & Workload Report</div>
+  <table class="data-table" style="min-width: 520px;">
+    <thead>
+      <tr>
+        <th style="width: 140px;">Department</th>
+        <th style="width: 160px;">HOD</th>
+        <th style="width: 110px;">Total Faculty</th>
+        <th style="width: 110px;">Classes Scheduled</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${deptRows}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">2. Faculty Cadre / Designation Report</div>
+  <table class="data-table" style="min-width: 320px;">
+    <thead>
+      <tr>
+        <th style="width: 180px;">Designation</th>
+        <th style="width: 100px;">Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${desigRows}
+    </tbody>
+  </table>
+</div>

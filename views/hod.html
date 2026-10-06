@@ -1,0 +1,44 @@
+<h3>HOD Management</h3>
+
+<table class="data-table" style="min-width: 420px;">
+  <thead>
+    <tr>
+      <th style="width: 140px;">Department</th>
+      <th style="width: 180px;">HOD</th>
+      <th style="width: 80px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<div id="assign-hod" style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 8px;">Assign HOD</div>
+  <form method="POST" action="/admin/hod/assign">
+    <table class="form-table">
+      <tr>
+        <td style="width: 120px;">Department:</td>
+        <td>
+          <select name="department_id" required style="width: 180px;">
+            ${deptOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Faculty:</td>
+        <td>
+          <select name="faculty_id" required style="width: 180px;">
+            ${facultyOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="padding-top: 8px;">
+          <input type="submit" value="Assign HOD">
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>

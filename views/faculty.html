@@ -1,0 +1,30 @@
+<h3>Faculty Management</h3>
+
+<div style="margin: 10px 0;">
+  <a href="/admin/faculty/add">Add Faculty</a>
+</div>
+
+<div style="margin: 15px 0;">
+  <form method="GET" action="/admin/faculty" style="display: inline;">
+    <label>Search:</label>
+    <input type="text" name="q" value="${searchQuery}" style="width: 200px;">
+    <input type="submit" value="Search">
+    ${searchQuery ? `<a href="/admin/faculty" style="margin-left: 8px;">Reset</a>` : ''}
+  </form>
+</div>
+
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 140px;">Name</th>
+      <th style="width: 100px;">Department</th>
+      <th style="width: 160px;">Email</th>
+      <th style="width: 110px;">Designation</th>
+      <th style="width: 90px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>

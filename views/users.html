@@ -1,0 +1,66 @@
+<h3>User Management</h3>
+
+<div style="margin: 10px 0;">
+  <a href="#user-form">Create User</a>
+</div>
+
+<table class="data-table" style="min-width: 620px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 120px;">Username</th>
+      <th style="width: 150px;">Name</th>
+      <th style="width: 90px;">Role</th>
+      <th style="width: 80px;">Status</th>
+      <th style="width: 90px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<div id="user-form" style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 8px;">${formTitle}</div>
+  <form method="POST" action="${formAction}">
+    <table class="form-table">
+      <tr>
+        <td style="width: 100px;">Username:</td>
+        <td><input type="text" name="username" value="${editUser ? editUser.username : ''}" required style="width: 180px;"></td>
+      </tr>
+      <tr>
+        <td>Name:</td>
+        <td><input type="text" name="name" value="${editUser ? editUser.name : ''}" required style="width: 180px;"></td>
+      </tr>
+      <tr>
+        <td>Password:</td>
+        <td>
+          <input type="password" name="password" ${isEdit ? 'placeholder="Leave blank to keep current"' : 'required'} style="width: 180px;">
+        </td>
+      </tr>
+      <tr>
+        <td>Role:</td>
+        <td>
+          <select name="role" required style="width: 180px;">
+            ${roleOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Status:</td>
+        <td>
+          <select name="status" required style="width: 180px;">
+            ${statusOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="padding-top: 8px;">
+          <input type="submit" value="${isEdit ? 'Update User' : 'Create User'}">
+          ${isEdit ? `<button type="button" onclick="window.location.href='/admin/users'" style="margin-left: 5px;">Cancel</button>` : ''}
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>

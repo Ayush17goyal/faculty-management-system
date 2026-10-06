@@ -1,0 +1,35 @@
+<style>
+  .history-intro{max-width:760px;margin-bottom:18px}.history-intro h3{margin:0 0 5px}.history-intro p{margin:0;color:#687386;font-size:12px}
+  .history-search{display:flex;gap:8px;max-width:760px;margin-bottom:22px;padding:14px;background:#fff;border:1px solid #d9dee6;border-radius:3px}
+  .history-search input{flex:1}.history-search button{min-width:105px}
+  .history-empty{max-width:760px;padding:34px;background:#fff;border:1px solid #d9dee6;text-align:center;color:#59667a}
+  .history-empty strong{display:block;margin-bottom:5px;color:#273246;font-size:15px}.history-empty p{margin:0;font-size:12px}
+  .history-record{max-width:1000px;margin-bottom:22px;background:#fff;border:1px solid #d9dee6;border-radius:3px;overflow:hidden}
+  .faculty-summary{display:grid;grid-template-columns:48px 1fr auto;gap:14px;align-items:center;padding:18px 20px;border-bottom:1px solid #d9dee6}
+  .faculty-monogram{width:46px;height:46px;display:grid;place-items:center;border-radius:50%;background:#e7eef6;color:#123f73;font-size:14px;font-weight:700}
+  .faculty-identity h3{margin:0 0 3px;font-size:17px}.faculty-identity p{margin:0;color:#6d7889;font-size:11px}
+  .current-title{text-align:right}.current-title span{display:block;margin-bottom:3px;color:#7b8696;font-size:9px;text-transform:uppercase;letter-spacing:.55px}.current-title strong{font-size:12px;color:#243146}
+  .faculty-facts{display:grid;grid-template-columns:1.4fr 1fr .7fr;border-bottom:1px solid #d9dee6;background:#fafbfc}
+  .faculty-facts>div{padding:12px 20px;border-right:1px solid #e2e6ec}.faculty-facts>div:last-child{border-right:0}
+  .faculty-facts span{display:block;margin-bottom:3px;color:#7b8696;font-size:9px;text-transform:uppercase;letter-spacing:.5px}.faculty-facts strong{font-size:11px;font-weight:600;color:#354156}
+  .history-content{padding:20px}.history-title{margin:0 0 18px;font-size:13px}
+  .timeline{position:relative}.timeline:before{content:"";position:absolute;left:6px;top:8px;bottom:9px;width:1px;background:#c9d0da}
+  .timeline-item{position:relative;display:grid;grid-template-columns:14px minmax(0,1fr);gap:12px;padding-bottom:20px}.timeline-item:last-child{padding-bottom:0}
+  .timeline-period{margin-bottom:3px;color:#6a7688;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.35px}
+  .timeline-marker{position:relative;z-index:1;width:9px;height:9px;margin:3px auto 0;border:2px solid #7c899b;border-radius:50%;background:#fff}
+  .timeline-item.current .timeline-marker{border-color:#1a6b55;background:#1a6b55}.timeline-item.current .timeline-period{color:#1a6b55}
+  .timeline-detail h4{margin:0 0 3px;font-size:12px}.timeline-detail>div{color:#647083;font-size:10px}.timeline-detail p{margin:5px 0 0;color:#7b8696;font-size:10px}
+  @media(max-width:700px){.history-search{flex-direction:column}.history-search button{width:100%}.faculty-summary{grid-template-columns:48px 1fr}.current-title{grid-column:1/-1;text-align:left;padding-left:62px}.faculty-facts{grid-template-columns:1fr}.faculty-facts>div{border-right:0;border-bottom:1px solid #e2e6ec}.faculty-facts>div:last-child{border-bottom:0}}
+</style>
+
+<section class="history-intro">
+  <h3>Faculty career history</h3>
+  <p>Search the faculty register to review qualifications, current designation, and earlier academic or administrative appointments.</p>
+</section>
+
+<form class="history-search" method="GET" action="/admin/faculty-history">
+  <input type="text" name="q" value="${searchQuery}" placeholder="Enter faculty name or ID, for example Rahul Sharma" aria-label="Faculty name or ID" autofocus required>
+  <button type="submit">Search record</button>
+</form>
+
+<section class="history-results">${resultsHtml}</section>

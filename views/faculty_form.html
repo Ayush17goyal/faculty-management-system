@@ -1,0 +1,45 @@
+<h3>${formTitle}</h3>
+
+<form method="POST" action="${actionUrl}">
+  <table class="form-table">
+    <tr>
+      <td style="width: 120px;">Faculty ID:</td>
+      <td><input type="text" name="faculty_code" value="${faculty.faculty_code || ''}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Name:</td>
+      <td><input type="text" name="name" value="${faculty.name || ''}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Email:</td>
+      <td><input type="email" name="email" value="${faculty.email || ''}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Phone:</td>
+      <td><input type="text" name="phone" value="${faculty.phone || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Department:</td>
+      <td>
+        <select name="department_id" style="width: 180px;">
+          ${deptOptions}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Designation:</td>
+      <td><input type="text" name="designation" value="${faculty.designation || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Qualification:</td>
+      <td><input type="text" name="qualification" value="${faculty.qualification || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="padding-top: 10px;">
+        <input type="submit" value="Submit">
+        <button type="button" onclick="window.location.href='/admin/faculty'" style="margin-left: 5px;">Cancel</button>
+      </td>
+    </tr>
+  </table>
+</form>

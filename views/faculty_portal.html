@@ -1,0 +1,278 @@
+<!-- SECTION: dashboard -->
+<h3>Faculty Dashboard</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.name}</div>
+  <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+  <div>Designation &nbsp;&nbsp;&nbsp;: ${faculty.designation || 'N/A'}</div>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Assigned Courses</div>
+  <table class="data-table" style="min-width: 580px;">
+    <thead>
+      <tr>
+        <th style="width: 90px;">Course Code</th>
+        <th style="width: 180px;">Course Name</th>
+        <th style="width: 90px;">Semester</th>
+        <th style="width: 70px;">Section</th>
+        <th style="width: 60px;">Credits</th>
+        <th style="width: 70px;">Students</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${courseRows}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Coursework Assignments</div>
+  <table class="data-table" style="min-width: 580px;">
+    <thead>
+      <tr>
+        <th style="width: 220px;">Assignment Title</th>
+        <th style="width: 110px;">Course</th>
+        <th style="width: 90px;">Due Date</th>
+        <th style="width: 80px;">Submissions</th>
+        <th style="width: 70px;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${assignmentRows}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">My Timetable</div>
+  <table class="data-table" style="min-width: 480px;">
+    <thead>
+      <tr>
+        <th style="width: 80px;">Day</th>
+        <th style="width: 120px;">Time</th>
+        <th style="width: 140px;">Subject</th>
+        <th style="width: 80px;">Room</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${timetableRows}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION: profile -->
+<h3>My Profile</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Faculty ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.faculty_code}</div>
+  <div>Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.name}</div>
+  <div>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.email}</div>
+  <div>Phone &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.phone || 'N/A'}</div>
+  <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+  <div>Designation &nbsp;&nbsp;&nbsp;: ${faculty.designation || 'N/A'}</div>
+  <div>Qualification &nbsp;: ${faculty.qualification || 'N/A'}</div>
+</div>
+
+<div style="margin-top: 20px;">
+  <a href="/faculty/profile/edit"><button type="button">Edit Profile</button></a>
+</div>
+
+<!-- SECTION: profile_edit -->
+<h3>Edit Profile</h3>
+
+<form method="POST" action="/faculty/profile/edit">
+  <table class="form-table">
+    <tr>
+      <td style="width: 120px;">Faculty ID:</td>
+      <td><input type="text" value="${faculty.faculty_code}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+    </tr>
+    <tr>
+      <td>Name:</td>
+      <td><input type="text" name="name" value="${faculty.name}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Email:</td>
+      <td><input type="email" name="email" value="${faculty.email}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Phone:</td>
+      <td><input type="text" name="phone" value="${faculty.phone || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Department:</td>
+      <td><input type="text" value="${departmentName}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+    </tr>
+    <tr>
+      <td>Designation:</td>
+      <td><input type="text" value="${faculty.designation || ''}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+    </tr>
+    <tr>
+      <td>Qualification:</td>
+      <td><input type="text" name="qualification" value="${faculty.qualification || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="padding-top: 10px;">
+        <input type="submit" value="Save Changes">
+        <button type="button" onclick="window.location.href='/faculty/profile'" style="margin-left: 5px;">Cancel</button>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<!-- SECTION: courses -->
+<h3>My Courses</h3>
+
+<div style="margin: 15px 0;">
+  Here are the courses currently assigned to you for teaching:
+</div>
+
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 90px;">Course Code</th>
+      <th style="width: 180px;">Course Name</th>
+      <th style="width: 90px;">Department</th>
+      <th style="width: 90px;">Semester</th>
+      <th style="width: 70px;">Section</th>
+      <th style="width: 60px;">Credits</th>
+      <th style="width: 70px;">Students</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: assignments -->
+<h3>Coursework Assignments</h3>
+
+<div style="margin: 10px 0;">
+  <a href="/faculty/assignments/add"><button type="button">Add New Assignment</button></a>
+</div>
+
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 200px;">Assignment Title</th>
+      <th style="width: 180px;">Course</th>
+      <th style="width: 90px;">Due Date</th>
+      <th style="width: 80px;">Submissions</th>
+      <th style="width: 70px;">Status</th>
+      <th style="width: 60px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: assignment_form -->
+<h3>Add Coursework Assignment</h3>
+
+${error ? `<div class="err-banner">${error}</div>` : ''}
+
+<form method="POST" action="/faculty/assignments/add">
+  <table class="form-table">
+    <tr>
+      <td style="width: 140px;">Select Course:</td>
+      <td>
+        <select name="course_id" required style="width: 260px;">
+          ${courseOptions}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Assignment Title:</td>
+      <td><input type="text" name="title" required style="width: 260px;"></td>
+    </tr>
+    <tr>
+      <td>Description:</td>
+      <td><input type="text" name="description" placeholder="Short description or instructions" style="width: 260px;"></td>
+    </tr>
+    <tr>
+      <td>Due Date:</td>
+      <td><input type="text" name="due_date" placeholder="e.g. 15 Oct 2026" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="padding-top: 10px;">
+        <input type="submit" value="Create Assignment">
+        <button type="button" onclick="window.location.href='/faculty/assignments'" style="margin-left: 5px;">Cancel</button>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<!-- SECTION: attendance -->
+<h3>Attendance Records</h3>
+
+<div style="font-weight: bold; margin: 15px 0 6px 0;">Record Class Lecture Attendance</div>
+<form method="POST" action="/faculty/attendance">
+  <table class="form-table">
+    <tr>
+      <td style="width: 130px;">Course:</td>
+      <td>
+        <select name="course_id" required style="width: 240px;">
+          ${courseOptions}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>Date:</td>
+      <td><input type="text" name="date" value="23 Sep 2026" required style="width: 140px;"></td>
+    </tr>
+    <tr>
+      <td>Topic Covered:</td>
+      <td><input type="text" name="topic" placeholder="e.g. Chapter 3: Heat Engines" required style="width: 240px;"></td>
+    </tr>
+    <tr>
+      <td>Present Students:</td>
+      <td><input type="text" name="present_count" value="45" required style="width: 80px;"></td>
+    </tr>
+    <tr>
+      <td>Total Students:</td>
+      <td><input type="text" name="total_count" value="50" required style="width: 80px;"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="padding-top: 6px;">
+        <input type="submit" value="Save Attendance">
+      </td>
+    </tr>
+  </table>
+</form>
+
+<div style="font-weight: bold; margin-top: 25px; margin-bottom: 6px;">Attendance History</div>
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 90px;">Date</th>
+      <th style="width: 180px;">Course</th>
+      <th style="width: 200px;">Topic</th>
+      <th style="width: 90px;">Attendance</th>
+      <th style="width: 70px;">%</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: timetable -->
+<h3>My Timetable</h3>
+
+<table class="data-table" style="min-width: 480px;">
+  <thead>
+    <tr>
+      <th style="width: 80px;">Day</th>
+      <th style="width: 120px;">Time</th>
+      <th style="width: 140px;">Subject</th>
+      <th style="width: 80px;">Room</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>

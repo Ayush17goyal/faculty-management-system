@@ -1,0 +1,113 @@
+<!-- SECTION: dashboard -->
+<h3>Director Dashboard</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Total Faculty &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${totalFaculty}</div>
+  <div>Total Departments : ${totalDepartments}</div>
+  <div>Total HODs &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${totalHODs}</div>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Department Summary</div>
+  <table class="data-table" style="min-width: 500px;">
+    <thead>
+      <tr>
+        <th style="width: 50px;">ID</th>
+        <th>Department</th>
+        <th style="width: 160px;">HOD</th>
+        <th style="width: 100px;">Faculty Count</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${deptRows}
+    </tbody>
+  </table>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">HOD List</div>
+  <table class="data-table" style="min-width: 500px;">
+    <thead>
+      <tr>
+        <th style="width: 140px;">Department</th>
+        <th>HOD</th>
+        <th style="width: 180px;">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${hodRows}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION: faculty -->
+<h3>Faculty List (Institution-wide)</h3>
+
+<table class="data-table" style="min-width: 680px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 140px;">Name</th>
+      <th style="width: 100px;">Department</th>
+      <th style="width: 120px;">Designation</th>
+      <th style="width: 160px;">Email</th>
+      <th>Qualification</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: departments -->
+<h3>Department List</h3>
+
+<table class="data-table" style="min-width: 500px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 140px;">Department</th>
+      <th style="width: 160px;">HOD</th>
+      <th style="width: 100px;">Faculty Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: hods -->
+<h3>HOD List</h3>
+
+<table class="data-table" style="min-width: 550px;">
+  <thead>
+    <tr>
+      <th style="width: 140px;">Department</th>
+      <th style="width: 160px;">HOD</th>
+      <th style="width: 170px;">Email</th>
+      <th style="width: 110px;">Phone</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: timetable -->
+<h3>Institution Timetable</h3>
+
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 65px;">Day</th>
+      <th style="width: 110px;">Time</th>
+      <th style="width: 140px;">Faculty</th>
+      <th style="width: 100px;">Department</th>
+      <th style="width: 110px;">Subject</th>
+      <th style="width: 70px;">Room</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>

@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Faculty Management System</title>
+  <style>
+    body {
+      font-family: "Times New Roman", Times, serif;
+      background-color: #ffffff;
+      color: #000000;
+      margin: 20px 30px;
+      font-size: 15px;
+    }
+    h2 {
+      font-size: 24px;
+      margin: 0 0 4px 0;
+      font-weight: bold;
+    }
+    h3 {
+      font-size: 19px;
+      margin: 0 0 12px 0;
+      font-weight: bold;
+    }
+    h4 {
+      font-size: 16px;
+      margin: 15px 0 6px 0;
+      font-weight: bold;
+    }
+    a {
+      color: #0000ee;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    a:visited {
+      color: #551a8b;
+    }
+    .header-bar {
+      border-bottom: 1px solid #888888;
+      padding-bottom: 10px;
+      margin-bottom: 18px;
+    }
+    .layout-container {
+      display: flex;
+      min-height: 520px;
+    }
+    .sidebar {
+      width: 160px;
+      border-right: 1px solid #888888;
+      padding-right: 15px;
+      flex-shrink: 0;
+    }
+    .sidebar-menu {
+      margin-top: 5px;
+    }
+    .sidebar-item {
+      margin-bottom: 10px;
+      font-size: 15px;
+    }
+    .sidebar-item a {
+      text-decoration: underline;
+    }
+    .sidebar-item.active a {
+      font-weight: bold;
+      color: #000000;
+    }
+    .sidebar-logout {
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #cccccc;
+    }
+    .main-content {
+      flex-grow: 1;
+      padding-left: 25px;
+    }
+    table.data-table {
+      border-collapse: collapse;
+      border: 1px solid #888888;
+      margin-top: 10px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    table.data-table th, table.data-table td {
+      border: 1px solid #888888;
+      padding: 4px 10px;
+      text-align: left;
+    }
+    table.data-table th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+    }
+    table.form-table {
+      border-collapse: collapse;
+      margin-top: 8px;
+      margin-bottom: 14px;
+    }
+    table.form-table td {
+      padding: 5px 8px;
+      vertical-align: middle;
+      border: none;
+    }
+    input[type="text"], input[type="password"], input[type="email"], select, textarea {
+      font-family: inherit;
+      font-size: 14px;
+      padding: 2px 4px;
+      border: 1px solid #777777;
+    }
+    input[type="submit"], button, .btn {
+      font-family: inherit;
+      font-size: 13px;
+      padding: 2px 10px;
+      cursor: pointer;
+    }
+    .msg-banner {
+      color: #006600;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .err-banner {
+      color: #cc0000;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    .login-container {
+      width: 420px;
+      margin: 80px auto 0 auto;
+      text-align: center;
+    }
+    .stat-box {
+      border: 1px solid #888888;
+      display: inline-block;
+      padding: 10px 20px;
+      margin-right: 15px;
+      margin-bottom: 15px;
+      min-width: 130px;
+      background-color: #fafafa;
+    }
+    .stat-number {
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+    .modal-backdrop {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal-box {
+      background: #ffffff;
+      padding: 20px 25px;
+      border: 1px solid #333333;
+      max-width: 500px;
+      width: 100%;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app"></div>
+
+  <script>
+    // ==========================================
+    // 1. DATA STORE INITIALIZATION (LocalStorage)
+    // ==========================================
+    const DEFAULT_DATA = {
+      currentUser: { role: 'Faculty', username: 'amit01', name: 'Amit Kumar', faculty_id: 3 },
+      departments: [
+        { id: 1, name: 'CSE', hod_id: 1 },
+        { id: 2, name: 'ECE', hod_id: 2 },
+        { id: 3, name: 'ME', hod_id: 3 },
+        { id: 4, name: 'CE', hod_id: 4 },
+        { id: 5, name: 'EE', hod_id: 5 }
+      ],
+      faculty: [
+        { id: 1, faculty_code: '101', name: 'Rahul Sharma', email: 'rahul@gmail.com', phone: '9876543210', department_id: 1, designation: 'Professor', qualification: 'Ph.D CSE', date_added: '12 Sep 2026' },
+        { id: 2, faculty_code: '102', name: 'Priya Singh', email: 'priya@gmail.com', phone: '9876543211', department_id: 2, designation: 'Assistant', qualification: 'M.Tech ECE', date_added: '10 Sep 2026' },
+        { id: 3, faculty_code: '103', name: 'Amit Kumar', email: 'amit@gmail.com', phone: '9876543212', department_id: 3, designation: 'Associate', qualification: 'M.Tech ME', date_added: '08 Sep 2026' },
+        { id: 4, faculty_code: '104', name: 'Neha Verma', email: 'neha@gmail.com', phone: '9876543213', department_id: 4, designation: 'Professor', qualification: 'Ph.D CE', date_added: '05 Sep 2026' },
+        { id: 5, faculty_code: '105', name: 'Suresh Rao', email: 'suresh@gmail.com', phone: '9876543214', department_id: 5, designation: 'Associate', qualification: 'Ph.D EE', date_added: '01 Sep 2026' },
+        { id: 6, faculty_code: '106', name: 'Vikas Gupta', email: 'vikas@gmail.com', phone: '9876543215', department_id: 1, designation: 'Associate', qualification: 'M.Tech CSE', date_added: '28 Aug 2026' },
+        { id: 7, faculty_code: '107', name: 'Ananya Roy', email: 'ananya@gmail.com', phone: '9876543216', department_id: 2, designation: 'Assistant', qualification: 'Ph.D ECE', date_added: '25 Aug 2026' },
+        { id: 8, faculty_code: '108', name: 'Manish Tiwari', email: 'manish@gmail.com', phone: '9876543217', department_id: 3, designation: 'Assistant', qualification: 'M.Tech ME', date_added: '22 Aug 2026' },
+        { id: 9, faculty_code: '109', name: 'Pooja Nair', email: 'pooja@gmail.com', phone: '9876543218', department_id: 4, designation: 'Associate', qualification: 'Ph.D CE', date_added: '20 Aug 2026' },
+        { id: 10, faculty_code: '110', name: 'Deepak Mehta', email: 'deepak@gmail.com', phone: '9876543219', department_id: 5, designation: 'Assistant', qualification: 'M.Tech EE', date_added: '18 Aug 2026' },
+        { id: 11, faculty_code: '111', name: 'Sunita Patel', email: 'sunita@gmail.com', phone: '9876543220', department_id: 1, designation: 'Assistant', qualification: 'M.Tech CSE', date_added: '15 Aug 2026' },
+        { id: 12, faculty_code: '112', name: 'Arun Joshi', email: 'arun@gmail.com', phone: '9876543221', department_id: 2, designation: 'Professor', qualification: 'Ph.D ECE', date_added: '12 Aug 2026' },
+        { id: 13, faculty_code: '113', name: 'Kavita Das', email: 'kavita@gmail.com', phone: '9876543222', department_id: 3, designation: 'Assistant', qualification: 'M.Tech ME', date_added: '10 Aug 2026' },
+        { id: 14, faculty_code: '114', name: 'Rakesh Yadav', email: 'rakesh@gmail.com', phone: '9876543223', department_id: 4, designation: 'Assistant', qualification: 'M.Tech CE', date_added: '08 Aug 2026' },
+        { id: 15, faculty_code: '115', name: 'Nisha Jain', email: 'nisha@gmail.com', phone: '9876543224', department_id: 5, designation: 'Professor', qualification: 'Ph.D EE', date_added: '05 Aug 2026' },
+        { id: 16, faculty_code: '116', name: 'Gaurav Bhatia', email: 'gaurav@gmail.com', phone: '9876543225', department_id: 1, designation: 'Assistant', qualification: 'M.Tech CSE', date_added: '02 Aug 2026' },
+        { id: 17, faculty_code: '117', name: 'Shweta Sen', email: 'shweta@gmail.com', phone: '9876543226', department_id: 2, designation: 'Associate', qualification: 'M.Tech ECE', date_added: '30 Jul 2026' },
+        { id: 18, faculty_code: '118', name: 'Rajesh Mishra', email: 'rajesh@gmail.com', phone: '9876543227', department_id: 3, designation: 'Professor', qualification: 'Ph.D ME', date_added: '28 Jul 2026' },
+        { id: 19, faculty_code: '119', name: 'Geeta Reddy', email: 'geeta@gmail.com', phone: '9876543228', department_id: 4, designation: 'Assistant', qualification: 'M.Tech CE', date_added: '25 Jul 2026' },
+        { id: 20, faculty_code: '120', name: 'Harish Chandra', email: 'harish@gmail.com', phone: '9876543229', department_id: 5, designation: 'Associate', qualification: 'Ph.D EE', date_added: '22 Jul 2026' },
+        { id: 21, faculty_code: '121', name: 'Tanvi Saxena', email: 'tanvi@gmail.com', phone: '9876543230', department_id: 1, designation: 'Associate', qualification: 'Ph.D CSE', date_added: '20 Jul 2026' },
+        { id: 22, faculty_code: '122', name: 'Rohan Kapoor', email: 'rohan@gmail.com', phone: '9876543231', department_id: 2, designation: 'Assistant', qualification: 'M.Tech ECE', date_added: '18 Jul 2026' },
+        { id: 23, faculty_code: '123', name: 'Meenakshi Iyer', email: 'meenakshi@gmail.com', phone: '9876543232', department_id: 3, designation: 'Assistant', qualification: 'M.Tech ME', date_added: '15 Jul 2026' },
+        { id: 24, faculty_code: '124', name: 'Alok Pandey', email: 'alok@gmail.com', phone: '9876543233', department_id: 4, designation: 'Associate', qualification: 'Ph.D CE', date_added: '12 Jul 2026' },
+        { id: 25, faculty_code: '125', name: 'Smita Deshmukh', email: 'smita@gmail.com', phone: '9876543234', department_id: 5, designation: 'Assistant', qualification: 'M.Tech EE', date_added: '10 Jul 2026' }
+      ],
+      courses: [
+        { id: 1, course_code: 'ME-301', course_name: 'Thermodynamics', department_id: 3, credits: 4, semester: 'Semester 5' },
+        { id: 2, course_code: 'ME-302', course_name: 'Fluid Mechanics', department_id: 3, credits: 4, semester: 'Semester 5' },
+        { id: 3, course_code: 'ME-205', course_name: 'Computer Networks & IoT', department_id: 3, credits: 3, semester: 'Semester 4' },
+        { id: 4, course_code: 'CSE-101', course_name: 'Database Management Systems', department_id: 1, credits: 4, semester: 'Semester 3' },
+        { id: 5, course_code: 'CSE-102', course_name: 'Operating Systems', department_id: 1, credits: 4, semester: 'Semester 4' },
+        { id: 6, course_code: 'CSE-103', course_name: 'Computer Networks', department_id: 1, credits: 4, semester: 'Semester 5' },
+        { id: 7, course_code: 'ECE-201', course_name: 'Digital Electronics', department_id: 2, credits: 4, semester: 'Semester 3' },
+        { id: 8, course_code: 'ECE-202', course_name: 'Signals and Systems', department_id: 2, credits: 4, semester: 'Semester 4' },
+        { id: 9, course_code: 'CE-301', course_name: 'Structural Analysis', department_id: 4, credits: 4, semester: 'Semester 5' },
+        { id: 10, course_code: 'EE-201', course_name: 'Power Systems', department_id: 5, credits: 4, semester: 'Semester 4' }
+      ],
+      faculty_courses: [
+        { id: 1, faculty_id: 3, course_id: 1, section: 'Section A', total_students: 52 },
+        { id: 2, faculty_id: 3, course_id: 2, section: 'Section B', total_students: 48 },
+        { id: 3, faculty_id: 3, course_id: 3, section: 'Section A', total_students: 50 },
+        { id: 4, faculty_id: 1, course_id: 4, section: 'Section A', total_students: 60 },
+        { id: 5, faculty_id: 1, course_id: 5, section: 'Section B', total_students: 58 },
+        { id: 6, faculty_id: 1, course_id: 6, section: 'Section A', total_students: 62 },
+        { id: 7, faculty_id: 2, course_id: 7, section: 'Section A', total_students: 55 },
+        { id: 8, faculty_id: 2, course_id: 8, section: 'Section B', total_students: 52 },
+        { id: 9, faculty_id: 4, course_id: 9, section: 'Section A', total_students: 45 },
+        { id: 10, faculty_id: 5, course_id: 10, section: 'Section A', total_students: 50 }
+      ],
+      assignments: [
+        { id: 1, faculty_id: 3, course_id: 1, title: 'Problem Set 2: Carnot Cycle & Entropy', description: 'Solve analytical problems 4.1 through 4.12.', due_date: '02 Oct 2026', total_submissions: 35, status: 'Active' },
+        { id: 2, faculty_id: 3, course_id: 2, title: 'Lab Report 1: Wind Tunnel Fluid Analysis', description: 'Submit experimental boundary layer write-up.', due_date: '28 Sep 2026', total_submissions: 42, status: 'Active' },
+        { id: 3, faculty_id: 3, course_id: 3, title: 'Network Simulation Assignment', description: 'Configure TCP/IP subnet topologies using Packet Tracer.', due_date: '15 Sep 2026', total_submissions: 50, status: 'Completed' },
+        { id: 4, faculty_id: 1, course_id: 4, title: 'SQL Query Optimization', description: 'Normalized schemas and index analysis queries.', due_date: '05 Oct 2026', total_submissions: 45, status: 'Active' },
+        { id: 5, faculty_id: 1, course_id: 5, title: 'Process Synchronization Lab', description: 'Implement producer-consumer mutex in C.', due_date: '30 Sep 2026', total_submissions: 52, status: 'Active' }
+      ],
+      attendance: [
+        { id: 1, faculty_id: 3, course_id: 1, date: '21 Sep 2026', topic: 'First Law of Thermodynamics & Open Systems', present_count: 48, total_count: 52 },
+        { id: 2, faculty_id: 3, course_id: 2, date: '22 Sep 2026', topic: 'Bernoulli Equation Applications', present_count: 44, total_count: 48 },
+        { id: 3, faculty_id: 3, course_id: 3, date: '22 Sep 2026', topic: 'OSI Model vs TCP/IP Architecture', present_count: 49, total_count: 50 },
+        { id: 4, faculty_id: 1, course_id: 4, date: '22 Sep 2026', topic: 'B-Trees and Clustered Indexes', present_count: 56, total_count: 60 }
+      ],
+      timetable: [
+        { id: 1, day: 'Mon', time: '09:00-10:00', faculty_id: 1, subject: 'DBMS', room: 'A-101' },
+        { id: 2, day: 'Mon', time: '10:00-11:00', faculty_id: 1, subject: 'OS', room: 'A-102' },
+        { id: 3, day: 'Tue', time: '09:00-10:00', faculty_id: 1, subject: 'CN', room: 'A-103' },
+        { id: 4, day: 'Mon', time: '10:00-11:00', faculty_id: 2, subject: 'OS', room: 'A-102' },
+        { id: 5, day: 'Tue', time: '09:00-10:00', faculty_id: 3, subject: 'CN', room: 'A-103' },
+        { id: 6, day: 'Wed', time: '11:00-12:00', faculty_id: 4, subject: 'Structures', room: 'B-201' },
+        { id: 7, day: 'Thu', time: '10:00-11:00', faculty_id: 5, subject: 'Power Systems', room: 'C-301' },
+        { id: 8, day: 'Wed', time: '10:00-11:00', faculty_id: 6, subject: 'Data Structures', room: 'A-104' },
+        { id: 9, day: 'Thu', time: '09:00-10:00', faculty_id: 7, subject: 'Digital Electronics', room: 'B-102' }
+      ],
+      users: [
+        { id: 1, username: 'admin01', name: 'Admin User', role: 'Admin', status: 'Active', faculty_id: null },
+        { id: 2, username: 'admin', name: 'Administrator', role: 'Admin', status: 'Active', faculty_id: null },
+        { id: 3, username: 'rahul01', name: 'Rahul Sharma', role: 'HOD', status: 'Active', faculty_id: 1 },
+        { id: 4, username: 'amit01', name: 'Amit Kumar', role: 'Faculty', status: 'Active', faculty_id: 3 },
+        { id: 5, username: 'priya01', name: 'Priya Singh', role: 'Faculty', status: 'Active', faculty_id: 2 },
+        { id: 6, username: 'director01', name: 'Dr. S. K. Gupta', role: 'Director', status: 'Active', faculty_id: null },
+        { id: 7, username: 'vp01', name: 'Prof. M. L. Aggarwal', role: 'VP', status: 'Active', faculty_id: null },
+        { id: 8, username: 'president01', name: 'Shri R. N. Bansal', role: 'President', status: 'Active', faculty_id: null }
+      ]
+    };
+
+    function loadData() {
+      const stored = localStorage.getItem('fms_app_data_v2');
+      if (stored) {
+        try { return JSON.parse(stored); } catch(e) {}
+      }
+      localStorage.setItem('fms_app_data_v2', JSON.stringify(DEFAULT_DATA));
+      return JSON.parse(JSON.stringify(DEFAULT_DATA));
+    }
+
+    let state = loadData();
+    let currentRoute = window.location.hash.slice(1) || 'faculty/dashboard';
+    let bannerMessage = '';
+    let bannerError = '';
+
+    function saveData() {
+      localStorage.setItem('fms_app_data_v2', JSON.stringify(state));
+    }
+
+    function notify(msg, isError = false) {
+      if (isError) bannerError = msg;
+      else bannerMessage = msg;
+      render();
+    }
+
+    function clearBanners() {
+      bannerMessage = '';
+      bannerError = '';
+    }
+
+    function navigate(route) {
+      currentRoute = route;
+      window.location.hash = '#' + route;
+      clearBanners();
+      render();
+    }
+
+    window.addEventListener('hashchange', () => {
+      const h = window.location.hash.slice(1);
+      if (h && h !== currentRoute) {
+        currentRoute = h;
+        render();
+      }
+    });
+
+    // ==========================================
+    // 2. NAVIGATION CONFIGURATION
+    // ==========================================
+    function getNavItems(role) {
+      switch (role) {
+        case 'HOD':
+          return [
+            { label: 'Dashboard', route: 'hod/dashboard' },
+            { label: 'Faculty', route: 'hod/faculty' },
+            { label: 'Department', route: 'hod/department' },
+            { label: 'Timetable', route: 'hod/timetable' }
+          ];
+        case 'Faculty':
+          return [
+            { label: 'Dashboard', route: 'faculty/dashboard' },
+            { label: 'My Profile', route: 'faculty/profile' },
+            { label: 'My Courses', route: 'faculty/courses' },
+            { label: 'Assignments', route: 'faculty/assignments' },
+            { label: 'Attendance', route: 'faculty/attendance' },
+            { label: 'My Timetable', route: 'faculty/timetable' }
+          ];
+        case 'Director':
+          return [
+            { label: 'Dashboard', route: 'director/dashboard' },
+            { label: 'Faculty', route: 'director/faculty' },
+            { label: 'Departments', route: 'director/departments' },
+            { label: 'HODs', route: 'director/hods' },
+            { label: 'Timetable', route: 'director/timetable' }
+          ];
+        case 'VP':
+          return [
+            { label: 'Dashboard', route: 'vp/dashboard' },
+            { label: 'Faculty', route: 'vp/faculty' },
+            { label: 'Departments', route: 'vp/departments' },
+            { label: 'HODs', route: 'vp/hods' },
+            { label: 'Reports', route: 'vp/reports' }
+          ];
+        case 'President':
+          return [
+            { label: 'Dashboard', route: 'president/dashboard' },
+            { label: 'Faculty Overview', route: 'president/faculty' },
+            { label: 'Department Overview', route: 'president/departments' },
+            { label: 'HOD Overview', route: 'president/hods' }
+          ];
+        case 'Admin':
+        default:
+          return [
+            { label: 'Dashboard', route: 'admin/dashboard' },
+            { label: 'Faculty', route: 'admin/faculty' },
+            { label: 'Departments', route: 'admin/departments' },
+            { label: 'HOD', route: 'admin/hod' },
+            { label: 'Timetable', route: 'admin/timetable' },
+            { label: 'Users', route: 'admin/users' }
+          ];
+      }
+    }
+
+    // ==========================================
+    // 3. VIEW RENDERERS
+    // ==========================================
+
+    // --- Login View ---
+    function renderLogin() {
+      const defaultUsers = {
+        'Admin': 'admin01',
+        'Faculty': 'amit01',
+        'HOD': 'rahul01',
+        'Director': 'director01',
+        'VP': 'vp01',
+        'President': 'president01'
+      };
+
+      return `
+        <div class="login-container">
+          <h2>Faculty Management System</h2>
+
+          ${bannerMessage ? `<div class="msg-banner">${bannerMessage}</div>` : ''}
+          ${bannerError ? `<div class="err-banner">${bannerError}</div>` : ''}
+
+          <form onsubmit="handleLogin(event)">
+            <table class="form-table" style="margin: 0 auto; text-align: left;">
+              <tr>
+                <td>Select Role:</td>
+                <td>
+                  <select id="login-role" onchange="document.getElementById('login-username').value = '${defaultUsers['Admin']}'; updateLoginUser(this.value);" style="width: 170px;">
+                    <option value="Admin">Admin</option>
+                    <option value="HOD">HOD</option>
+                    <option value="Faculty" selected>Faculty</option>
+                    <option value="Director">Director</option>
+                    <option value="VP">VP</option>
+                    <option value="President">President</option>
+                  </select>
+                </td>
+              </tr>
+              <tr>
+                <td>Username:</td>
+                <td><input type="text" id="login-username" value="amit01" style="width: 170px;"></td>
+              </tr>
+              <tr>
+                <td>Password:</td>
+                <td><input type="password" id="login-password" value="amit123" style="width: 170px;"></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td style="padding-top: 10px;">
+                  <input type="submit" value="Login">
+                </td>
+              </tr>
+            </table>
+          </form>
+        </div>
+      `;
+    }
+
+    function updateLoginUser(role) {
+      const map = {
+        Admin: ['admin01', 'admin123'],
+        HOD: ['rahul01', 'rahul123'],
+        Faculty: ['amit01', 'amit123'],
+        Director: ['director01', 'director123'],
+        VP: ['vp01', 'vp123'],
+        President: ['president01', 'president123']
+      };
+      const creds = map[role] || ['admin01', 'admin123'];
+      document.getElementById('login-username').value = creds[0];
+      document.getElementById('login-password').value = creds[1];
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const role = document.getElementById('login-role').value;
+      const username = document.getElementById('login-username').value.trim();
+
+      const user = state.users.find(u => u.username === username && u.role === role);
+      if (user) {
+        state.currentUser = { ...user };
+        saveData();
+        const routeMap = {
+          Admin: 'admin/dashboard',
+          HOD: 'hod/dashboard',
+          Faculty: 'faculty/dashboard',
+          Director: 'director/dashboard',
+          VP: 'vp/dashboard',
+          President: 'president/dashboard'
+        };
+        navigate(routeMap[role] || 'admin/dashboard');
+      } else {
+        notify('Invalid username or role credentials.', true);
+      }
+    }
+
+    function handleLogout() {
+      state.currentUser = null;
+      saveData();
+      navigate('login');
+    }
+
+    // --- FACULTY VIEWS ---
+    function renderFacultyDashboard() {
+      const facId = state.currentUser.faculty_id || 3;
+      const faculty = state.faculty.find(f => f.id === facId) || state.faculty[2];
+      const dept = state.departments.find(d => d.id === faculty.department_id);
+      const departmentName = dept ? dept.name : 'ME';
+
+      // Assigned Courses
+      const facCourses = state.faculty_courses.filter(fc => fc.faculty_id === facId);
+      let courseRows = '';
+      if (facCourses.length > 0) {
+        for (const fc of facCourses) {
+          const c = state.courses.find(item => item.id === fc.course_id);
+          if (c) {
+            courseRows += `
+              <tr>
+                <td>${c.course_code}</td>
+                <td>${c.course_name}</td>
+                <td>${c.semester}</td>
+                <td>${fc.section}</td>
+                <td>${c.credits}</td>
+                <td>${fc.total_students}</td>
+              </tr>`;
+          }
+        }
+      } else {
+        courseRows = `<tr><td colspan="6">No courses assigned currently.</td></tr>`;
+      }
+
+      // Coursework Assignments
+      const facAssignments = state.assignments.filter(a => a.faculty_id === facId);
+      let assignmentRows = '';
+      if (facAssignments.length > 0) {
+        for (const a of facAssignments) {
+          const c = state.courses.find(item => item.id === a.course_id);
+          assignmentRows += `
+            <tr>
+              <td>${a.title}</td>
+              <td>${c ? c.course_code : 'N/A'}</td>
+              <td>${a.due_date}</td>
+              <td>${a.total_submissions}</td>
+              <td>${a.status}</td>
+            </tr>`;
+        }
+      } else {
+        assignmentRows = `<tr><td colspan="5">No active coursework assignments.</td></tr>`;
+      }
+
+      // Timetable
+      const facTimetable = state.timetable.filter(t => t.faculty_id === facId);
+      let timetableRows = '';
+      if (facTimetable.length > 0) {
+        for (const t of facTimetable) {
+          timetableRows += `
+            <tr>
+              <td>${t.day}</td>
+              <td>${t.time}</td>
+              <td>${t.subject}</td>
+              <td>${t.room}</td>
+            </tr>`;
+        }
+      } else {
+        timetableRows = `<tr><td colspan="4">No teaching schedule assigned.</td></tr>`;
+      }
+
+      return `
+        <h3>Faculty Dashboard</h3>
+
+        <div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+          <div>Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.name}</div>
+          <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+          <div>Designation &nbsp;&nbsp;&nbsp;: ${faculty.designation || 'N/A'}</div>
+        </div>
+
+        <div style="margin-top: 25px;">
+          <div style="font-weight: bold; margin-bottom: 6px;">Assigned Courses</div>
+          <table class="data-table" style="min-width: 580px;">
+            <thead>
+              <tr>
+                <th style="width: 90px;">Course Code</th>
+                <th style="width: 180px;">Course Name</th>
+                <th style="width: 90px;">Semester</th>
+                <th style="width: 70px;">Section</th>
+                <th style="width: 60px;">Credits</th>
+                <th style="width: 70px;">Students</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${courseRows}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 25px;">
+          <div style="font-weight: bold; margin-bottom: 6px;">Coursework Assignments</div>
+          <table class="data-table" style="min-width: 580px;">
+            <thead>
+              <tr>
+                <th style="width: 220px;">Assignment Title</th>
+                <th style="width: 110px;">Course</th>
+                <th style="width: 90px;">Due Date</th>
+                <th style="width: 80px;">Submissions</th>
+                <th style="width: 70px;">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${assignmentRows}
+            </tbody>
+          </table>
+        </div>
+
+        <div style="margin-top: 25px;">
+          <div style="font-weight: bold; margin-bottom: 6px;">My Timetable</div>
+          <table class="data-table" style="min-width: 480px;">
+            <thead>
+              <tr>
+                <th style="width: 80px;">Day</th>
+                <th style="width: 120px;">Time</th>
+                <th style="width: 140px;">Subject</th>
+                <th style="width: 80px;">Room</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${timetableRows}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function renderFacultyProfile() {
+      const facId = state.currentUser.faculty_id || 3;
+      const faculty = state.faculty.find(f => f.id === facId) || state.faculty[2];
+      const dept = state.departments.find(d => d.id === faculty.department_id);
+      const departmentName = dept ? dept.name : 'ME';
+
+      return `
+        <h3>My Profile</h3>
+
+        <div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+          <div>Faculty ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.faculty_code}</div>
+          <div>Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.name}</div>
+          <div>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.email}</div>
+          <div>Phone &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.phone || 'N/A'}</div>
+          <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+          <div>Designation &nbsp;&nbsp;&nbsp;: ${faculty.designation || 'N/A'}</div>
+          <div>Qualification &nbsp;: ${faculty.qualification || 'N/A'}</div>
+        </div>
+
+        <div style="margin-top: 20px;">
+          <button type="button" onclick="navigate('faculty/profile/edit')">Edit Profile</button>
+        </div>
+      `;
+    }
+
+    function renderFacultyProfileEdit() {
+      const facId = state.currentUser.faculty_id || 3;
+      const faculty = state.faculty.find(f => f.id === facId) || state.faculty[2];
+      const dept = state.departments.find(d => d.id === faculty.department_id);
+      const departmentName = dept ? dept.name : 'ME';
+
+      return `
+        <h3>Edit Profile</h3>
+
+        <form onsubmit="handleSaveProfile(event, ${faculty.id})">
+          <table class="form-table">
+            <tr>
+              <td style="width: 120px;">Faculty ID:</td>
+              <td><input type="text" value="${faculty.faculty_code}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+            </tr>
+            <tr>
+              <td>Name:</td>
+              <td><input type="text" id="prof-name" value="${faculty.name}" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td><input type="email" id="prof-email" value="${faculty.email}" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td><input type="text" id="prof-phone" value="${faculty.phone || ''}" style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Department:</td>
+              <td><input type="text" value="${departmentName}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+            </tr>
+            <tr>
+              <td>Designation:</td>
+              <td><input type="text" value="${faculty.designation || ''}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+            </tr>
+            <tr>
+              <td>Qualification:</td>
+              <td><input type="text" id="prof-qual" value="${faculty.qualification || ''}" style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style="padding-top: 10px;">
+                <input type="submit" value="Save Changes">
+                <button type="button" onclick="navigate('faculty/profile')" style="margin-left: 5px;">Cancel</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      `;
+    }
+
+    function handleSaveProfile(e, facId) {
+      e.preventDefault();
+      const fac = state.faculty.find(f => f.id === facId);
+      if (fac) {
+        fac.name = document.getElementById('prof-name').value.trim();
+        fac.email = document.getElementById('prof-email').value.trim();
+        fac.phone = document.getElementById('prof-phone').value.trim();
+        fac.qualification = document.getElementById('prof-qual').value.trim();
+        state.currentUser.name = fac.name;
+        saveData();
+        notify('Profile updated successfully.');
+        navigate('faculty/profile');
+      }
+    }
+
+    function renderFacultyCourses() {
+      const facId = state.currentUser.faculty_id || 3;
+      const facCourses = state.faculty_courses.filter(fc => fc.faculty_id === facId);
+
+      let rows = '';
+      if (facCourses.length > 0) {
+        for (const fc of facCourses) {
+          const c = state.courses.find(item => item.id === fc.course_id);
+          const dept = state.departments.find(d => d.id === c.department_id);
+          rows += `
+            <tr>
+              <td>${c.course_code}</td>
+              <td>${c.course_name}</td>
+              <td>${dept ? dept.name : 'N/A'}</td>
+              <td>${c.semester}</td>
+              <td>${fc.section}</td>
+              <td>${c.credits}</td>
+              <td>${fc.total_students}</td>
+            </tr>`;
+        }
+      } else {
+        rows = `<tr><td colspan="7">No courses assigned.</td></tr>`;
+      }
+
+      return `
+        <h3>My Courses</h3>
+
+        <div style="margin: 15px 0;">
+          Here are the courses currently assigned to you for teaching:
+        </div>
+
+        <table class="data-table" style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th style="width: 90px;">Course Code</th>
+              <th style="width: 180px;">Course Name</th>
+              <th style="width: 90px;">Department</th>
+              <th style="width: 90px;">Semester</th>
+              <th style="width: 70px;">Section</th>
+              <th style="width: 60px;">Credits</th>
+              <th style="width: 70px;">Students</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderFacultyAssignments() {
+      const facId = state.currentUser.faculty_id || 3;
+      const assignments = state.assignments.filter(a => a.faculty_id === facId);
+
+      let rows = '';
+      if (assignments.length > 0) {
+        for (const a of assignments) {
+          const c = state.courses.find(item => item.id === a.course_id);
+          rows += `
+            <tr>
+              <td>${a.title}</td>
+              <td>${c ? c.course_code + ' - ' + c.course_name : 'N/A'}</td>
+              <td>${a.due_date}</td>
+              <td>${a.total_submissions || 0}</td>
+              <td>${a.status}</td>
+              <td>
+                <a onclick="deleteAssignment(${a.id})">Delete</a>
+              </td>
+            </tr>`;
+        }
+      } else {
+        rows = `<tr><td colspan="6">No coursework assignments created yet.</td></tr>`;
+      }
+
+      return `
+        <h3>Coursework Assignments</h3>
+
+        <div style="margin: 10px 0;">
+          <button type="button" onclick="navigate('faculty/assignments/add')">Add New Assignment</button>
+        </div>
+
+        <table class="data-table" style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th style="width: 200px;">Assignment Title</th>
+              <th style="width: 180px;">Course</th>
+              <th style="width: 90px;">Due Date</th>
+              <th style="width: 80px;">Submissions</th>
+              <th style="width: 70px;">Status</th>
+              <th style="width: 60px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderFacultyAssignmentForm() {
+      const facId = state.currentUser.faculty_id || 3;
+      const facCourses = state.faculty_courses.filter(fc => fc.faculty_id === facId);
+
+      let courseOptions = '';
+      for (const fc of facCourses) {
+        const c = state.courses.find(item => item.id === fc.course_id);
+        if (c) {
+          courseOptions += `<option value="${c.id}">${c.course_code} - ${c.course_name} (${fc.section})</option>`;
+        }
+      }
+
+      return `
+        <h3>Add Coursework Assignment</h3>
+
+        <form onsubmit="handleCreateAssignment(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 140px;">Select Course:</td>
+              <td>
+                <select id="asgn-course" required style="width: 260px;">
+                  ${courseOptions}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Assignment Title:</td>
+              <td><input type="text" id="asgn-title" required style="width: 260px;"></td>
+            </tr>
+            <tr>
+              <td>Description:</td>
+              <td><input type="text" id="asgn-desc" placeholder="Short description or instructions" style="width: 260px;"></td>
+            </tr>
+            <tr>
+              <td>Due Date:</td>
+              <td><input type="text" id="asgn-due" placeholder="e.g. 15 Oct 2026" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style="padding-top: 10px;">
+                <input type="submit" value="Create Assignment">
+                <button type="button" onclick="navigate('faculty/assignments')" style="margin-left: 5px;">Cancel</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      `;
+    }
+
+    function handleCreateAssignment(e) {
+      e.preventDefault();
+      const facId = state.currentUser.faculty_id || 3;
+      const courseId = parseInt(document.getElementById('asgn-course').value, 10);
+      const title = document.getElementById('asgn-title').value.trim();
+      const desc = document.getElementById('asgn-desc').value.trim();
+      const due = document.getElementById('asgn-due').value.trim();
+
+      const newId = state.assignments.length > 0 ? Math.max(...state.assignments.map(a => a.id)) + 1 : 1;
+      state.assignments.unshift({
+        id: newId,
+        faculty_id: facId,
+        course_id: courseId,
+        title,
+        description: desc,
+        due_date: due,
+        total_submissions: 0,
+        status: 'Active'
+      });
+      saveData();
+      notify('Assignment created successfully.');
+      navigate('faculty/assignments');
+    }
+
+    function deleteAssignment(id) {
+      if (confirm('Are you sure you want to delete this assignment?')) {
+        state.assignments = state.assignments.filter(a => a.id !== id);
+        saveData();
+        notify('Assignment deleted successfully.');
+        render();
+      }
+    }
+
+    function renderFacultyAttendance() {
+      const facId = state.currentUser.faculty_id || 3;
+      const records = state.attendance.filter(a => a.faculty_id === facId);
+      const facCourses = state.faculty_courses.filter(fc => fc.faculty_id === facId);
+
+      let rows = '';
+      if (records.length > 0) {
+        for (const a of records) {
+          const c = state.courses.find(item => item.id === a.course_id);
+          const percentage = a.total_count > 0 ? Math.round((a.present_count / a.total_count) * 100) : 0;
+          rows += `
+            <tr>
+              <td>${a.date}</td>
+              <td>${c ? c.course_code + ' - ' + c.course_name : 'N/A'}</td>
+              <td>${a.topic || 'Lecture'}</td>
+              <td>${a.present_count} / ${a.total_count}</td>
+              <td>${percentage}%</td>
+            </tr>`;
+        }
+      } else {
+        rows = `<tr><td colspan="5">No attendance records found.</td></tr>`;
+      }
+
+      let courseOptions = '';
+      for (const fc of facCourses) {
+        const c = state.courses.find(item => item.id === fc.course_id);
+        if (c) {
+          courseOptions += `<option value="${c.id}">${c.course_code} - ${c.course_name} (${fc.section})</option>`;
+        }
+      }
+
+      return `
+        <h3>Attendance Records</h3>
+
+        <div style="font-weight: bold; margin: 15px 0 6px 0;">Record Class Lecture Attendance</div>
+        <form onsubmit="handleRecordAttendance(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 130px;">Course:</td>
+              <td>
+                <select id="att-course" required style="width: 240px;">
+                  ${courseOptions}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Date:</td>
+              <td><input type="text" id="att-date" value="23 Sep 2026" required style="width: 140px;"></td>
+            </tr>
+            <tr>
+              <td>Topic Covered:</td>
+              <td><input type="text" id="att-topic" placeholder="e.g. Chapter 3: Heat Engines" required style="width: 240px;"></td>
+            </tr>
+            <tr>
+              <td>Present Students:</td>
+              <td><input type="text" id="att-present" value="45" required style="width: 80px;"></td>
+            </tr>
+            <tr>
+              <td>Total Students:</td>
+              <td><input type="text" id="att-total" value="50" required style="width: 80px;"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style="padding-top: 6px;">
+                <input type="submit" value="Save Attendance">
+              </td>
+            </tr>
+          </table>
+        </form>
+
+        <div style="font-weight: bold; margin-top: 25px; margin-bottom: 6px;">Attendance History</div>
+        <table class="data-table" style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th style="width: 90px;">Date</th>
+              <th style="width: 180px;">Course</th>
+              <th style="width: 200px;">Topic</th>
+              <th style="width: 90px;">Attendance</th>
+              <th style="width: 70px;">%</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function handleRecordAttendance(e) {
+      e.preventDefault();
+      const facId = state.currentUser.faculty_id || 3;
+      const courseId = parseInt(document.getElementById('att-course').value, 10);
+      const date = document.getElementById('att-date').value.trim();
+      const topic = document.getElementById('att-topic').value.trim();
+      const present = parseInt(document.getElementById('att-present').value, 10) || 0;
+      const total = parseInt(document.getElementById('att-total').value, 10) || 0;
+
+      const newId = state.attendance.length > 0 ? Math.max(...state.attendance.map(a => a.id)) + 1 : 1;
+      state.attendance.unshift({
+        id: newId,
+        faculty_id: facId,
+        course_id: courseId,
+        date,
+        topic,
+        present_count: present,
+        total_count: total
+      });
+      saveData();
+      notify('Attendance recorded successfully.');
+      render();
+    }
+
+    function renderFacultyTimetable() {
+      const facId = state.currentUser.faculty_id || 3;
+      const timetable = state.timetable.filter(t => t.faculty_id === facId);
+
+      let rows = '';
+      if (timetable.length > 0) {
+        for (const t of timetable) {
+          rows += `
+            <tr>
+              <td>${t.day}</td>
+              <td>${t.time}</td>
+              <td>${t.subject}</td>
+              <td>${t.room}</td>
+            </tr>`;
+        }
+      } else {
+        rows = `<tr><td colspan="4">No schedule records found.</td></tr>`;
+      }
+
+      return `
+        <h3>My Timetable</h3>
+
+        <table class="data-table" style="min-width: 480px;">
+          <thead>
+            <tr>
+              <th style="width: 80px;">Day</th>
+              <th style="width: 120px;">Time</th>
+              <th style="width: 140px;">Subject</th>
+              <th style="width: 80px;">Room</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // --- ADMIN VIEWS ---
+    function renderAdminDashboard() {
+      const totalFaculty = state.faculty.length;
+      const totalDepartments = state.departments.length;
+      const totalHODs = state.departments.filter(d => d.hod_id).length;
+      const totalTimetable = state.timetable.length;
+
+      return `
+        <h3>Admin Dashboard</h3>
+
+        <div style="margin: 20px 0;">
+          <div class="stat-box">
+            <div>Total Faculty</div>
+            <div class="stat-number">${totalFaculty}</div>
+          </div>
+          <div class="stat-box">
+            <div>Departments</div>
+            <div class="stat-number">${totalDepartments}</div>
+          </div>
+          <div class="stat-box">
+            <div>HODs Assigned</div>
+            <div class="stat-number">${totalHODs}</div>
+          </div>
+          <div class="stat-box">
+            <div>Timetable Entries</div>
+            <div class="stat-number">${totalTimetable}</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 25px;">
+          <div style="font-weight: bold; margin-bottom: 6px;">Quick Actions</div>
+          <div><a onclick="navigate('admin/faculty')">Manage Faculty Records</a></div>
+          <div style="margin-top: 6px;"><a onclick="navigate('admin/departments')">Manage Departments</a></div>
+          <div style="margin-top: 6px;"><a onclick="navigate('admin/hod')">Assign HODs</a></div>
+          <div style="margin-top: 6px;"><a onclick="navigate('admin/timetable')">Manage Timetable</a></div>
+        </div>
+      `;
+    }
+
+    let facultySearchQuery = '';
+    function renderAdminFaculty() {
+      let filtered = state.faculty;
+      if (facultySearchQuery) {
+        const q = facultySearchQuery.toLowerCase();
+        filtered = filtered.filter(f =>
+          f.name.toLowerCase().includes(q) ||
+          f.faculty_code.toLowerCase().includes(q) ||
+          f.email.toLowerCase().includes(q) ||
+          (f.designation && f.designation.toLowerCase().includes(q))
+        );
+      }
+
+      let rows = '';
+      if (filtered.length > 0) {
+        for (const f of filtered) {
+          const dept = state.departments.find(d => d.id === f.department_id);
+          rows += `
+            <tr>
+              <td>${f.faculty_code}</td>
+              <td>${f.name}</td>
+              <td>${dept ? dept.name : 'N/A'}</td>
+              <td>${f.email}</td>
+              <td>${f.designation || 'N/A'}</td>
+              <td>
+                <a onclick="editFacultyPrompt(${f.id})">Edit</a> |
+                <a onclick="deleteFaculty(${f.id})">Delete</a>
+              </td>
+            </tr>`;
+        }
+      } else {
+        rows = `<tr><td colspan="6">No faculty records found.</td></tr>`;
+      }
+
+      return `
+        <h3>Faculty Management</h3>
+
+        <div style="margin: 10px 0;">
+          <button type="button" onclick="navigate('admin/faculty/add')">Add Faculty</button>
+        </div>
+
+        <div style="margin: 15px 0;">
+          <label>Search:</label>
+          <input type="text" id="fac-search" value="${facultySearchQuery}" style="width: 200px;">
+          <button type="button" onclick="facultySearchQuery = document.getElementById('fac-search').value; render();">Search</button>
+          ${facultySearchQuery ? `<button type="button" onclick="facultySearchQuery = ''; render();" style="margin-left: 5px;">Reset</button>` : ''}
+        </div>
+
+        <table class="data-table" style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th style="width: 50px;">ID</th>
+              <th style="width: 140px;">Name</th>
+              <th style="width: 100px;">Department</th>
+              <th style="width: 160px;">Email</th>
+              <th style="width: 110px;">Designation</th>
+              <th style="width: 90px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderAdminFacultyAdd() {
+      let deptOptions = '';
+      for (const d of state.departments) {
+        deptOptions += `<option value="${d.id}">${d.name}</option>`;
+      }
+
+      return `
+        <h3>Add Faculty</h3>
+
+        <form onsubmit="handleAddFaculty(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 120px;">Faculty Code:</td>
+              <td><input type="text" id="add-fcode" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Name:</td>
+              <td><input type="text" id="add-fname" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Email:</td>
+              <td><input type="email" id="add-femail" required style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Phone:</td>
+              <td><input type="text" id="add-fphone" style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td>Department:</td>
+              <td>
+                <select id="add-fdept" style="width: 180px;">
+                  ${deptOptions}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Designation:</td>
+              <td>
+                <select id="add-fdesig" style="width: 180px;">
+                  <option value="Professor">Professor</option>
+                  <option value="Associate">Associate</option>
+                  <option value="Assistant">Assistant</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Qualification:</td>
+              <td><input type="text" id="add-fqual" style="width: 180px;"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td style="padding-top: 10px;">
+                <input type="submit" value="Save Faculty">
+                <button type="button" onclick="navigate('admin/faculty')" style="margin-left: 5px;">Cancel</button>
+              </td>
+            </tr>
+          </table>
+        </form>
+      `;
+    }
+
+    function handleAddFaculty(e) {
+      e.preventDefault();
+      const code = document.getElementById('add-fcode').value.trim();
+      const name = document.getElementById('add-fname').value.trim();
+      const email = document.getElementById('add-femail').value.trim();
+      const phone = document.getElementById('add-fphone').value.trim();
+      const deptId = parseInt(document.getElementById('add-fdept').value, 10);
+      const desig = document.getElementById('add-fdesig').value;
+      const qual = document.getElementById('add-fqual').value.trim();
+
+      const newId = state.faculty.length > 0 ? Math.max(...state.faculty.map(f => f.id)) + 1 : 1;
+      state.faculty.push({
+        id: newId,
+        faculty_code: code,
+        name,
+        email,
+        phone,
+        department_id: deptId,
+        designation: desig,
+        qualification: qual,
+        date_added: '23 Sep 2026'
+      });
+      saveData();
+      notify('Faculty added successfully.');
+      navigate('admin/faculty');
+    }
+
+    function editFacultyPrompt(id) {
+      const f = state.faculty.find(item => item.id === id);
+      if (!f) return;
+      const newName = prompt('Enter updated name for ' + f.name + ':', f.name);
+      if (newName !== null && newName.trim()) {
+        f.name = newName.trim();
+        saveData();
+        notify('Faculty record updated.');
+        render();
+      }
+    }
+
+    function deleteFaculty(id) {
+      const f = state.faculty.find(item => item.id === id);
+      if (f && confirm('Are you sure you want to delete faculty ' + f.name + '?')) {
+        state.faculty = state.faculty.filter(item => item.id !== id);
+        saveData();
+        notify('Faculty deleted successfully.');
+        render();
+      }
+    }
+
+    function renderAdminDepartments() {
+      let rows = '';
+      for (const d of state.departments) {
+        const hod = state.faculty.find(f => f.id === d.hod_id);
+        const count = state.faculty.filter(f => f.department_id === d.id).length;
+        rows += `
+          <tr>
+            <td>${d.id}</td>
+            <td>${d.name}</td>
+            <td>${hod ? hod.name : 'Not Assigned'}</td>
+            <td>${count}</td>
+          </tr>`;
+      }
+
+      return `
+        <h3>Department Management</h3>
+
+        <div style="font-weight: bold; margin: 15px 0 6px 0;">Add Department</div>
+        <form onsubmit="handleAddDept(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 120px;">Department:</td>
+              <td><input type="text" id="dept-name" required placeholder="e.g. IT" style="width: 180px;"></td>
+              <td><input type="submit" value="Add"></td>
+            </tr>
+          </table>
+        </form>
+
+        <div style="font-weight: bold; margin-top: 20px; margin-bottom: 6px;">Departments List</div>
+        <table class="data-table" style="min-width: 500px;">
+          <thead>
+            <tr>
+              <th style="width: 50px;">ID</th>
+              <th style="width: 120px;">Name</th>
+              <th style="width: 160px;">HOD</th>
+              <th style="width: 90px;">Faculty Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function handleAddDept(e) {
+      e.preventDefault();
+      const name = document.getElementById('dept-name').value.trim();
+      if (!name) return;
+      const newId = state.departments.length > 0 ? Math.max(...state.departments.map(d => d.id)) + 1 : 1;
+      state.departments.push({ id: newId, name, hod_id: null });
+      saveData();
+      notify('Department added successfully.');
+      render();
+    }
+
+    function renderAdminHOD() {
+      let rows = '';
+      for (const d of state.departments) {
+        const hod = state.faculty.find(f => f.id === d.hod_id);
+        rows += `
+          <tr>
+            <td>${d.name}</td>
+            <td>${hod ? hod.name : 'Not Assigned'}</td>
+            <td>${hod ? hod.email : 'N/A'}</td>
+            <td>${hod ? hod.phone : 'N/A'}</td>
+          </tr>`;
+      }
+
+      let deptOpts = '';
+      for (const d of state.departments) {
+        deptOpts += `<option value="${d.id}">${d.name}</option>`;
+      }
+      let facOpts = '';
+      for (const f of state.faculty) {
+        facOpts += `<option value="${f.id}">${f.name} (${f.faculty_code})</option>`;
+      }
+
+      return `
+        <h3>HOD Management</h3>
+
+        <div style="font-weight: bold; margin: 15px 0 6px 0;">Assign HOD</div>
+        <form onsubmit="handleAssignHOD(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 100px;">Department:</td>
+              <td>
+                <select id="hod-dept" style="width: 160px;">
+                  ${deptOpts}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Faculty:</td>
+              <td>
+                <select id="hod-fac" style="width: 220px;">
+                  ${facOpts}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input type="submit" value="Assign HOD"></td>
+            </tr>
+          </table>
+        </form>
+
+        <div style="font-weight: bold; margin-top: 20px; margin-bottom: 6px;">Current Department HODs</div>
+        <table class="data-table" style="min-width: 550px;">
+          <thead>
+            <tr>
+              <th style="width: 110px;">Department</th>
+              <th style="width: 150px;">HOD Name</th>
+              <th style="width: 160px;">Email</th>
+              <th style="width: 110px;">Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function handleAssignHOD(e) {
+      e.preventDefault();
+      const deptId = parseInt(document.getElementById('hod-dept').value, 10);
+      const facId = parseInt(document.getElementById('hod-fac').value, 10);
+      const dept = state.departments.find(d => d.id === deptId);
+      if (dept) {
+        dept.hod_id = facId;
+        saveData();
+        notify('HOD assigned successfully.');
+        render();
+      }
+    }
+
+    function renderAdminTimetable() {
+      let rows = '';
+      for (const t of state.timetable) {
+        const fac = state.faculty.find(f => f.id === t.faculty_id);
+        rows += `
+          <tr>
+            <td>${t.day}</td>
+            <td>${t.time}</td>
+            <td>${fac ? fac.name : 'N/A'}</td>
+            <td>${t.subject}</td>
+            <td>${t.room}</td>
+            <td><a onclick="deleteTimetable(${t.id})">Delete</a></td>
+          </tr>`;
+      }
+
+      let facOpts = '';
+      for (const f of state.faculty) {
+        facOpts += `<option value="${f.id}">${f.name}</option>`;
+      }
+
+      return `
+        <h3>Timetable Management</h3>
+
+        <div style="font-weight: bold; margin: 15px 0 6px 0;">Add Timetable Entry</div>
+        <form onsubmit="handleAddTimetable(event)">
+          <table class="form-table">
+            <tr>
+              <td style="width: 80px;">Day:</td>
+              <td>
+                <select id="tt-day" style="width: 120px;">
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Time:</td>
+              <td><input type="text" id="tt-time" value="09:00-10:00" style="width: 140px;"></td>
+            </tr>
+            <tr>
+              <td>Faculty:</td>
+              <td>
+                <select id="tt-fac" style="width: 200px;">
+                  ${facOpts}
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Subject:</td>
+              <td><input type="text" id="tt-subj" placeholder="e.g. DBMS" required style="width: 140px;"></td>
+            </tr>
+            <tr>
+              <td>Room:</td>
+              <td><input type="text" id="tt-room" placeholder="e.g. A-101" required style="width: 100px;"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input type="submit" value="Add Schedule"></td>
+            </tr>
+          </table>
+        </form>
+
+        <div style="font-weight: bold; margin-top: 20px; margin-bottom: 6px;">Timetable Schedule</div>
+        <table class="data-table" style="min-width: 600px;">
+          <thead>
+            <tr>
+              <th style="width: 70px;">Day</th>
+              <th style="width: 110px;">Time</th>
+              <th style="width: 140px;">Faculty</th>
+              <th style="width: 120px;">Subject</th>
+              <th style="width: 80px;">Room</th>
+              <th style="width: 60px;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function handleAddTimetable(e) {
+      e.preventDefault();
+      const day = document.getElementById('tt-day').value;
+      const time = document.getElementById('tt-time').value.trim();
+      const facId = parseInt(document.getElementById('tt-fac').value, 10);
+      const subj = document.getElementById('tt-subj').value.trim();
+      const room = document.getElementById('tt-room').value.trim();
+
+      const newId = state.timetable.length > 0 ? Math.max(...state.timetable.map(t => t.id)) + 1 : 1;
+      state.timetable.push({ id: newId, day, time, faculty_id: facId, subject: subj, room });
+      saveData();
+      notify('Timetable entry added successfully.');
+      render();
+    }
+
+    function deleteTimetable(id) {
+      if (confirm('Delete this timetable entry?')) {
+        state.timetable = state.timetable.filter(t => t.id !== id);
+        saveData();
+        notify('Timetable entry deleted.');
+        render();
+      }
+    }
+
+    function renderAdminUsers() {
+      let rows = '';
+      for (const u of state.users) {
+        rows += `
+          <tr>
+            <td>${u.id}</td>
+            <td>${u.username}</td>
+            <td>${u.name}</td>
+            <td>${u.role}</td>
+            <td>${u.status}</td>
+          </tr>`;
+      }
+
+      return `
+        <h3>User Accounts</h3>
+        <table class="data-table" style="min-width: 500px;">
+          <thead>
+            <tr>
+              <th style="width: 50px;">ID</th>
+              <th style="width: 120px;">Username</th>
+              <th style="width: 150px;">Name</th>
+              <th style="width: 100px;">Role</th>
+              <th style="width: 80px;">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // --- HOD VIEWS ---
+    function renderHODDashboard() {
+      const facId = state.currentUser.faculty_id || 1;
+      const hodFac = state.faculty.find(f => f.id === facId) || state.faculty[0];
+      const dept = state.departments.find(d => d.id === hodFac.department_id) || state.departments[0];
+      const deptFaculty = state.faculty.filter(f => f.department_id === dept.id);
+
+      return `
+        <h3>HOD Dashboard</h3>
+        <div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+          <div>HOD Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${hodFac.name}</div>
+          <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${dept.name}</div>
+          <div>Total Faculty &nbsp;&nbsp;: ${deptFaculty.length}</div>
+        </div>
+
+        <div style="font-weight: bold; margin-top: 25px; margin-bottom: 6px;">Department Faculty Overview</div>
+        <table class="data-table" style="min-width: 550px;">
+          <thead>
+            <tr>
+              <th style="width: 60px;">ID</th>
+              <th style="width: 160px;">Name</th>
+              <th style="width: 160px;">Email</th>
+              <th style="width: 120px;">Designation</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${deptFaculty.slice(0, 5).map(f => `
+              <tr>
+                <td>${f.faculty_code}</td>
+                <td>${f.name}</td>
+                <td>${f.email}</td>
+                <td>${f.designation}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderHODFaculty() {
+      const facId = state.currentUser.faculty_id || 1;
+      const hodFac = state.faculty.find(f => f.id === facId) || state.faculty[0];
+      const dept = state.departments.find(d => d.id === hodFac.department_id) || state.departments[0];
+      const deptFaculty = state.faculty.filter(f => f.department_id === dept.id);
+
+      return `
+        <h3>Department Faculty - ${dept.name}</h3>
+        <table class="data-table" style="min-width: 650px;">
+          <thead>
+            <tr>
+              <th style="width: 60px;">Code</th>
+              <th style="width: 160px;">Name</th>
+              <th style="width: 160px;">Email</th>
+              <th style="width: 110px;">Phone</th>
+              <th style="width: 120px;">Designation</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${deptFaculty.map(f => `
+              <tr>
+                <td>${f.faculty_code}</td>
+                <td>${f.name}</td>
+                <td>${f.email}</td>
+                <td>${f.phone}</td>
+                <td>${f.designation}</td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderHODDepartment() {
+      const facId = state.currentUser.faculty_id || 1;
+      const hodFac = state.faculty.find(f => f.id === facId) || state.faculty[0];
+      const dept = state.departments.find(d => d.id === hodFac.department_id) || state.departments[0];
+      const count = state.faculty.filter(f => f.department_id === dept.id).length;
+
+      return `
+        <h3>Department Information</h3>
+        <div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+          <div>Department Name : ${dept.name}</div>
+          <div>Head of Dept &nbsp;&nbsp;&nbsp;&nbsp;: ${hodFac.name}</div>
+          <div>Total Faculty &nbsp;&nbsp;: ${count}</div>
+        </div>
+      `;
+    }
+
+    function renderHODTimetable() {
+      const facId = state.currentUser.faculty_id || 1;
+      const hodFac = state.faculty.find(f => f.id === facId) || state.faculty[0];
+      const dept = state.departments.find(d => d.id === hodFac.department_id) || state.departments[0];
+      const deptFacultyIds = state.faculty.filter(f => f.department_id === dept.id).map(f => f.id);
+      const timetable = state.timetable.filter(t => deptFacultyIds.includes(t.faculty_id));
+
+      return `
+        <h3>Department Timetable - ${dept.name}</h3>
+        <table class="data-table" style="min-width: 550px;">
+          <thead>
+            <tr>
+              <th style="width: 70px;">Day</th>
+              <th style="width: 110px;">Time</th>
+              <th style="width: 150px;">Faculty</th>
+              <th style="width: 120px;">Subject</th>
+              <th style="width: 80px;">Room</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${timetable.map(t => {
+              const f = state.faculty.find(item => item.id === t.faculty_id);
+              return `
+                <tr>
+                  <td>${t.day}</td>
+                  <td>${t.time}</td>
+                  <td>${f ? f.name : 'N/A'}</td>
+                  <td>${t.subject}</td>
+                  <td>${t.room}</td>
+                </tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    // --- DIRECTOR / VP / PRESIDENT OVERVIEWS ---
+    function renderDirectorDashboard() {
+      return `
+        <h3>Director Dashboard</h3>
+        <div style="margin: 20px 0;">
+          <div class="stat-box"><div>Total Faculty</div><div class="stat-number">${state.faculty.length}</div></div>
+          <div class="stat-box"><div>Departments</div><div class="stat-number">${state.departments.length}</div></div>
+          <div class="stat-box"><div>HODs Assigned</div><div class="stat-number">${state.departments.filter(d=>d.hod_id).length}</div></div>
+        </div>
+        <div style="font-weight: bold; margin-top: 25px; margin-bottom: 6px;">Department Summary</div>
+        <table class="data-table" style="min-width: 500px;">
+          <thead><tr><th>Department</th><th>HOD</th><th>Faculty Count</th></tr></thead>
+          <tbody>
+            ${state.departments.map(d => {
+              const hod = state.faculty.find(f => f.id === d.hod_id);
+              const count = state.faculty.filter(f => f.department_id === d.id).length;
+              return `<tr><td>${d.name}</td><td>${hod ? hod.name : 'Not Assigned'}</td><td>${count}</td></tr>`;
+            }).join('')}
+          </tbody>
+        </table>
+      `;
+    }
+
+    function renderVPDashboard() {
+      return `
+        <h3>Vice President Dashboard</h3>
+        <div style="margin: 20px 0;">
+          <div class="stat-box"><div>Total Faculty</div><div class="stat-number">${state.faculty.length}</div></div>
+          <div class="stat-box"><div>Active Courses</div><div class="stat-number">${state.courses.length}</div></div>
+          <div class="stat-box"><div>Timetable Slots</div><div class="stat-number">${state.timetable.length}</div></div>
+        </div>
+      `;
+    }
+
+    function renderPresidentDashboard() {
+      return `
+        <h3>President Dashboard</h3>
+        <div style="margin: 20px 0;">
+          <div class="stat-box"><div>Total Faculty</div><div class="stat-number">${state.faculty.length}</div></div>
+          <div class="stat-box"><div>Departments</div><div class="stat-number">${state.departments.length}</div></div>
+        </div>
+      `;
+    }
+
+    // ==========================================
+    // 4. MAIN LAYOUT AND ROUTE DISPATCHER
+    // ==========================================
+    function render() {
+      const app = document.getElementById('app');
+
+      if (!state.currentUser || currentRoute === 'login') {
+        app.innerHTML = renderLogin();
+        return;
+      }
+
+      const role = state.currentUser.role;
+      const navItems = getNavItems(role);
+
+      let sidebarHtml = '';
+      for (const item of navItems) {
+        const activeClass = currentRoute === item.route ? 'active' : '';
+        sidebarHtml += `<div class="sidebar-item ${activeClass}"><a onclick="navigate('${item.route}')">${item.label}</a></div>`;
+      }
+      sidebarHtml += `<div class="sidebar-item sidebar-logout"><a onclick="handleLogout()">Logout</a></div>`;
+
+      let mainContent = '';
+      switch (currentRoute) {
+        // Faculty routes
+        case 'faculty/dashboard': mainContent = renderFacultyDashboard(); break;
+        case 'faculty/profile': mainContent = renderFacultyProfile(); break;
+        case 'faculty/profile/edit': mainContent = renderFacultyProfileEdit(); break;
+        case 'faculty/courses': mainContent = renderFacultyCourses(); break;
+        case 'faculty/assignments': mainContent = renderFacultyAssignments(); break;
+        case 'faculty/assignments/add': mainContent = renderFacultyAssignmentForm(); break;
+        case 'faculty/attendance': mainContent = renderFacultyAttendance(); break;
+        case 'faculty/timetable': mainContent = renderFacultyTimetable(); break;
+
+        // Admin routes
+        case 'admin/dashboard': mainContent = renderAdminDashboard(); break;
+        case 'admin/faculty': mainContent = renderAdminFaculty(); break;
+        case 'admin/faculty/add': mainContent = renderAdminFacultyAdd(); break;
+        case 'admin/departments': mainContent = renderAdminDepartments(); break;
+        case 'admin/hod': mainContent = renderAdminHOD(); break;
+        case 'admin/timetable': mainContent = renderAdminTimetable(); break;
+        case 'admin/users': mainContent = renderAdminUsers(); break;
+
+        // HOD routes
+        case 'hod/dashboard': mainContent = renderHODDashboard(); break;
+        case 'hod/faculty': mainContent = renderHODFaculty(); break;
+        case 'hod/department': mainContent = renderHODDepartment(); break;
+        case 'hod/timetable': mainContent = renderHODTimetable(); break;
+
+        // Director routes
+        case 'director/dashboard': mainContent = renderDirectorDashboard(); break;
+        case 'director/faculty': mainContent = renderAdminFaculty(); break;
+        case 'director/departments': mainContent = renderAdminDepartments(); break;
+        case 'director/hods': mainContent = renderAdminHOD(); break;
+        case 'director/timetable': mainContent = renderAdminTimetable(); break;
+
+        // VP routes
+        case 'vp/dashboard': mainContent = renderVPDashboard(); break;
+        case 'vp/faculty': mainContent = renderAdminFaculty(); break;
+        case 'vp/departments': mainContent = renderAdminDepartments(); break;
+        case 'vp/hods': mainContent = renderAdminHOD(); break;
+        case 'vp/reports': mainContent = renderDirectorDashboard(); break;
+
+        // President routes
+        case 'president/dashboard': mainContent = renderPresidentDashboard(); break;
+        case 'president/faculty': mainContent = renderAdminFaculty(); break;
+        case 'president/departments': mainContent = renderAdminDepartments(); break;
+        case 'president/hods': mainContent = renderAdminHOD(); break;
+
+        default:
+          if (role === 'Faculty') mainContent = renderFacultyDashboard();
+          else if (role === 'HOD') mainContent = renderHODDashboard();
+          else mainContent = renderAdminDashboard();
+          break;
+      }
+
+      app.innerHTML = `
+        <div class="header-bar">
+          <h2>Faculty Management System</h2>
+        </div>
+
+        <div class="layout-container">
+          <div class="sidebar">
+            <div class="sidebar-menu">
+              ${sidebarHtml}
+            </div>
+          </div>
+
+          <div class="main-content">
+            ${bannerMessage ? `<div class="msg-banner">${bannerMessage}</div>` : ''}
+            ${bannerError ? `<div class="err-banner">${bannerError}</div>` : ''}
+            ${mainContent}
+          </div>
+        </div>
+      `;
+    }
+
+    // Initialize application on load
+    render();
+  </script>
+</body>
+</html>

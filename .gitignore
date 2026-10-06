@@ -1,0 +1,4 @@
+node_modules/
+fms.db
+.env
+npm-debug.log*

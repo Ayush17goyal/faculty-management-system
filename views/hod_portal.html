@@ -1,0 +1,203 @@
+<!-- SECTION: dashboard -->
+<h3>HOD Dashboard</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Department &nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+  <div>HOD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${hodName}</div>
+  <div>Total Faculty : ${totalFaculty}</div>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Department Faculty</div>
+  <table class="data-table" style="min-width: 580px;">
+    <thead>
+      <tr>
+        <th style="width: 60px;">ID</th>
+        <th>Name</th>
+        <th style="width: 140px;">Designation</th>
+        <th style="width: 180px;">Email</th>
+        <th style="width: 60px;">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${rows}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION: faculty_list -->
+<h3>Faculty Management - ${departmentName} Department</h3>
+
+<div style="margin: 10px 0;">
+  <a href="/hod/faculty/add">Add Faculty</a>
+</div>
+
+<table class="data-table" style="min-width: 650px;">
+  <thead>
+    <tr>
+      <th style="width: 50px;">ID</th>
+      <th style="width: 140px;">Name</th>
+      <th style="width: 120px;">Designation</th>
+      <th style="width: 160px;">Email</th>
+      <th style="width: 100px;">Phone</th>
+      <th style="width: 90px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<!-- SECTION: faculty_form -->
+<h3>${formTitle} (${departmentName})</h3>
+
+<form method="POST" action="${actionUrl}">
+  <table class="form-table">
+    <tr>
+      <td style="width: 120px;">Faculty ID:</td>
+      <td><input type="text" name="faculty_code" value="${faculty.faculty_code || ''}" required style="width: 180px;" ${isEdit ? 'readonly' : ''}></td>
+    </tr>
+    <tr>
+      <td>Name:</td>
+      <td><input type="text" name="name" value="${faculty.name || ''}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Email:</td>
+      <td><input type="email" name="email" value="${faculty.email || ''}" required style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Phone:</td>
+      <td><input type="text" name="phone" value="${faculty.phone || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Department:</td>
+      <td><input type="text" value="${departmentName}" disabled style="width: 180px; background-color: #f9f9f9;"></td>
+    </tr>
+    <tr>
+      <td>Designation:</td>
+      <td><input type="text" name="designation" value="${faculty.designation || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td>Qualification:</td>
+      <td><input type="text" name="qualification" value="${faculty.qualification || ''}" style="width: 180px;"></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td style="padding-top: 10px;">
+        <input type="submit" value="Submit">
+        <button type="button" onclick="window.location.href='/hod/faculty'" style="margin-left: 5px;">Cancel</button>
+      </td>
+    </tr>
+  </table>
+</form>
+
+<!-- SECTION: faculty_view -->
+<h3>Faculty Details</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Faculty ID &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.faculty_code}</div>
+  <div>Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.name}</div>
+  <div>Email &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.email}</div>
+  <div>Phone &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.phone || 'N/A'}</div>
+  <div>Department &nbsp;&nbsp;&nbsp;&nbsp;: ${departmentName}</div>
+  <div>Designation &nbsp;&nbsp;&nbsp;: ${faculty.designation || 'N/A'}</div>
+  <div>Qualification &nbsp;: ${faculty.qualification || 'N/A'}</div>
+  <div>Date Added &nbsp;&nbsp;&nbsp;&nbsp;: ${faculty.date_added || 'N/A'}</div>
+</div>
+
+<div style="margin-top: 20px;">
+  <a href="/hod/faculty/edit/${faculty.id}"><button type="button">Edit</button></a>
+  <a href="/hod/faculty"><button type="button" style="margin-left: 5px;">Back</button></a>
+</div>
+
+<!-- SECTION: department_info -->
+<h3>Department Information</h3>
+
+<div style="margin: 15px 0; font-size: 15px; line-height: 1.8;">
+  <div>Department Name : ${department.name}</div>
+  <div>HOD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: ${department.hod_name || 'Not Assigned'}</div>
+  <div>Total Faculty &nbsp;&nbsp;&nbsp;: ${totalFaculty}</div>
+</div>
+
+<div style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 6px;">Faculty Roster</div>
+  <table class="data-table" style="min-width: 550px;">
+    <thead>
+      <tr>
+        <th style="width: 60px;">ID</th>
+        <th>Name</th>
+        <th style="width: 140px;">Designation</th>
+        <th style="width: 180px;">Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${facultyRows}
+    </tbody>
+  </table>
+</div>
+
+<!-- SECTION: timetable -->
+<h3>Timetable Management - ${departmentName} Department</h3>
+
+<div style="margin: 10px 0;">
+  <a href="#schedule-form">Add Schedule</a>
+</div>
+
+<table class="data-table" style="min-width: 600px;">
+  <thead>
+    <tr>
+      <th style="width: 65px;">Day</th>
+      <th style="width: 110px;">Time</th>
+      <th style="width: 140px;">Faculty</th>
+      <th style="width: 110px;">Subject</th>
+      <th style="width: 70px;">Room</th>
+      <th style="width: 90px;">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    ${rows}
+  </tbody>
+</table>
+
+<div id="schedule-form" style="margin-top: 25px;">
+  <div style="font-weight: bold; margin-bottom: 8px;">${formTitle}</div>
+  <form method="POST" action="${formAction}">
+    <table class="form-table">
+      <tr>
+        <td style="width: 100px;">Day:</td>
+        <td>
+          <select name="day" required style="width: 180px;">
+            ${dayOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Time:</td>
+        <td><input type="text" name="time" placeholder="e.g. 09:00-10:00" value="${editSchedule ? editSchedule.time : ''}" required style="width: 180px;"></td>
+      </tr>
+      <tr>
+        <td>Faculty:</td>
+        <td>
+          <select name="faculty_id" required style="width: 180px;">
+            ${facultyOptions}
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Subject:</td>
+        <td><input type="text" name="subject" placeholder="e.g. DBMS" value="${editSchedule ? editSchedule.subject : ''}" required style="width: 180px;"></td>
+      </tr>
+      <tr>
+        <td>Room:</td>
+        <td><input type="text" name="room" placeholder="e.g. A-101" value="${editSchedule ? editSchedule.room : ''}" required style="width: 180px;"></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td style="padding-top: 8px;">
+          <input type="submit" value="${isEdit ? 'Update Schedule' : 'Submit'}">
+          ${isEdit ? `<button type="button" onclick="window.location.href='/hod/timetable'" style="margin-left: 5px;">Cancel</button>` : ''}
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
